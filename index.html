@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Raghad Info!</title>
+	<title>Raghad Information!</title>
 	<style>
 		body {
 			background-color: #f7f7f7;
@@ -40,20 +40,18 @@
 	</style>
 </head>
 <body>
-	<h1>Raghad Info!</h1>
-	<button onclick="getInfo()">Get Info</button>
+	<h1>Raghad Information!</h1>
+	<button onclick="getInfo()">Get Information</button>
 	<div class="info" id="info"></div>
 	
 	<script>
-	function getInfo() {
-		fetch('https://uselessfacts.jsph.pl/random.json?language=en')
-			.then(response => response.json())
-			.then(data => {
-				document.getElementById('info').innerHTML = data.text;
-			});
-	}
-</script>
-
+		function getInfo() {
+			fetch('https://uselessfacts.jsph.pl/random.json?language=en')
+				.then(response => response.json())
+				.then(data => {
+					document.getElementById('info').innerHTML = data.text;
+				});
+		}
 	</script>
 </body>
 </html>
