@@ -44,24 +44,120 @@
 			margin-bottom: 20px;
 			color: #1c478e;
 		}
+		.choices {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-top: 50px;
+			margin-bottom: 50px;
+		}
+		.choice {
+			margin-top: 10px;
+			margin-bottom: 10px;
+			padding: 10px 20px;
+			background-color: #fff;
+			color: #333;
+			border: 1px solid #1c478e;
+			border-radius: 5px;
+			font-size: 1.2em;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+		.choice:hover {
+			background-color: #1c478e;
+			color: #fff;
+		}
+		.hidden {
+			display: none;
+		}
+		.correct-message {
+			font-size: 2em;
+			text-align: center;
+			margin-top: 50px;
+			margin-bottom: 50px;
+			color: #3bb143;
+		}
+		.firework {
+			position: absolute;
+			opacity: 0;
+			animation: firework 1s linear forwards;
+			transition: opacity 0.3s;
+			z-index: 9999;
+		}
+		@keyframes firework {
+			0% {
+				transform: scale(0);
+				opacity: 1;
+			}
+			50% {
+				transform: scale(1.5);
+				opacity: 0.7;
+			}
+			100% {
+				transform: scale(1);
+				opacity: 0;
+			}
+		}
 	</style>
 </head>
 <body>
 	<h1>RaghadTriviaTest</h1>
 	<button onclick="getQuestion()">Get Question</button>
 	<div class="question" id="question"></div>
-	<div class="answer" id="answer"></div>
-	
+	<div class="choices" id="choices"></div>
+	<div class="answer hidden" id="answer"></div>
+	<div class="correct-message hidden" id="correct-message">Correct!</div>
+	<img class="firework" src="https://i.imgur.com/KG3k1Bu.png">
 	<script>
+		const API_URL = 'https://opentdb.com/api.php?amount=1&type=multiple';
+		let correctAnswer;
+
 		function getQuestion() {
-			fetch('https://opentdb.com/api.php?amount=1&type=multiple')
-				.then(response => response.json())
+			fetch(API_URL)
+				.then(res => res.json())
 				.then(data => {
-					const question = `${data.results[0].question}`;
-					const correctAnswer = `${data.results[0].correct_answer}`;
-					document.getElementById('question').innerHTML = question;
-					document.getElementById('answer').innerHTML = `Answer: ${correctAnswer}`;
+					const question = data.results[0].question;
+					const correctIndex = Math.floor(Math.random() * 4);
+					const incorrectAnswers = data.results[0].incorrect_answers;
+					incorrectAnswers.splice(correctIndex, 0, data.results[0].correct_answer);
+					correctAnswer = data.results[0].correct_answer;
+
+					const questionDiv = document.getElementById('question');
+					questionDiv.innerText = question;
+
+					const choicesDiv = document.getElementById('choices');
+					choicesDiv.innerHTML = '';
+					for (let i = 0; i < 4; i++) {
+						const choiceDiv = document.createElement('div');
+						choiceDiv.className = 'choice';
+						choiceDiv.innerText = incorrectAnswers[i];
+						choiceDiv.onclick = () => checkAnswer(i === correctIndex);
+						choicesDiv.appendChild(choiceDiv);
+					}
+
+					const answerDiv = document.getElementById('answer');
+					answerDiv.className = 'answer hidden';
+					answerDiv.innerText = correctAnswer;
+
+					const correctMessageDiv = document.getElementById('correct-message');
+					correctMessageDiv.className = 'correct-message hidden';
 				});
+		}
+
+		function checkAnswer(isCorrect) {
+			if (isCorrect) {
+				const correctMessageDiv = document.getElementById('correct-message');
+				correctMessageDiv.className = 'correct-message';
+				const fireworks = document.querySelectorAll('.firework');
+				for (let i = 0; i < fireworks.length; i++) {
+					fireworks[i].style.left = Math.random() * 100 + '%';
+					fireworks[i].style.top = Math.random() * 100 + '%';
+					fireworks[i].style.opacity = 1;
+				}
+			} else {
+				const answerDiv = document.getElementById('answer');
+				answerDiv.className = 'answer';
+			}
 		}
 	</script>
 </body>
