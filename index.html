@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Raghad Information!</title>
+	<title>RaghadQuranTest</title>
 	<style>
 		body {
 			background-color: #f7f7f7;
@@ -30,7 +30,7 @@
 		button:hover {
 			background-color: #2550a7;
 		}
-		.info {
+		.verse {
 			font-size: 2em;
 			text-align: center;
 			margin-top: 50px;
@@ -40,16 +40,17 @@
 	</style>
 </head>
 <body>
-	<h1>Raghad Information!</h1>
-	<button onclick="getInfo()">Get Information</button>
-	<div class="info" id="info"></div>
+	<h1>RaghadQuranTest</h1>
+	<button onclick="getVerse()">Get Verse</button>
+	<div class="verse" id="verse"></div>
 	
 	<script>
-		function getInfo() {
-			fetch('https://uselessfacts.jsph.pl/random.json?language=en')
+		function getVerse() {
+			fetch('https://api.alquran.cloud/ayah/random')
 				.then(response => response.json())
 				.then(data => {
-					document.getElementById('info').innerHTML = data.text;
+					const verse = `${data.data.surah.englishName} ${data.data.surah.number}:${data.data.numberInSurah} - ${data.data.text}`;
+					document.getElementById('verse').innerHTML = verse;
 				});
 		}
 	</script>
