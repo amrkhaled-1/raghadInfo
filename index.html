@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Raghad Jokes!</title>
+	<title>Raghad Progs!</title>
 	<style>
 		body {
 			background-color: #f7f7f7;
@@ -30,7 +30,7 @@
 		button:hover {
 			background-color: #2550a7;
 		}
-		.joke {
+		.info {
 			font-size: 2em;
 			text-align: center;
 			margin-top: 50px;
@@ -40,18 +40,20 @@
 	</style>
 </head>
 <body>
-	<h1>Raghad Jokes!</h1>
+	<h1>Raghad Progs!</h1>
 	<button onclick="getJoke()">Get Joke</button>
-	<div class="joke" id="joke"></div>
+	<div class="info" id="info"></div>
 	
 	<script>
-		function getJoke() {
-			fetch('https://api.chucknorris.io/jokes/random')
-				.then(response => response.json())
-				.then(data => {
-					document.getElementById('joke').innerHTML = data.value;
-				});
-		}
+	function getInfo() {
+		fetch('https://uselessfacts.jsph.pl/random.json?language=en')
+			.then(response => response.json())
+			.then(data => {
+				document.getElementById('info').innerHTML = data.text;
+			});
+	}
+</script>
+
 	</script>
 </body>
 </html>
