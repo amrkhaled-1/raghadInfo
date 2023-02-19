@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Raghad Jokes!</title>
+	<style>
+		body {
+			background-color: #f7f7f7;
+			font-family: Arial, sans-serif;
+			color: #333;
+		}
+		h1 {
+			font-size: 3em;
+			text-align: center;
+			margin-top: 50px;
+			margin-bottom: 50px;
+			color: #1c478e;
+		}
+		button {
+			display: block;
+			margin: 50px auto;
+			padding: 10px 20px;
+			background-color: #1c478e;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			font-size: 1.2em;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+		button:hover {
+			background-color: #2550a7;
+		}
+		.joke {
+			font-size: 2em;
+			text-align: center;
+			margin-top: 50px;
+			margin-bottom: 50px;
+			color: #333;
+		}
+	</style>
+</head>
+<body>
+	<h1>Raghad Jokes!</h1>
+	<button onclick="getJoke()">Get Joke</button>
+	<div class="joke" id="joke"></div>
+	
+	<script>
+		function getJoke() {
+			fetch('https://api.chucknorris.io/jokes/random')
+				.then(response => response.json())
+				.then(data => {
+					document.getElementById('joke').innerHTML = data.value;
+				});
+		}
+	</script>
+</body>
+</html>
