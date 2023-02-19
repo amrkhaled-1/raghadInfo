@@ -62,41 +62,68 @@
     <button id="choiceD"></button>
   </div>
   <p id="score">Score: 0</p>
+  <button id="newQuestion">New Question</button>
   <script>
-    let score = 0;
-    const question = document.getElementById("question");
-    const choices = Array.from(document.querySelectorAll("#choices button"));
-    const scoreDisplay = document.getElementById("score");
-javascript
-Copy code
-function getQuestion() {
-  fetch("https://opentdb.com/api.php?amount=1")
-    .then((res) => res.json())
-    .then((data) => {
-      const questionData = data.results[0];
-      question.innerText = questionData.question;
-      const choicesData = questionData.incorrect_answers.concat(questionData.correct_answer);
-      choicesData.sort(() => Math.random() - 0.5);
-      choices.forEach((choice, index) => {
-        choice.innerText = choicesData[index];
-        choice.onclick = () => {
-          if (choice.innerText === questionData.correct_answer) {
-            choice.style.backgroundColor = "green";
-            score++;
-          } else {
-            choice.style.backgroundColor = "red";
-            choices.find((c) => c.innerText === questionData.correct_answer).style.backgroundColor =
-              "green";
-          }
-          scoreDisplay.innerText = `Score: ${score}`;
-          choices.forEach((c) => (c.disabled = true));
-        };
-      });
-    })
-    .catch((err) => console.error(err));
-}
+  let score = 0;
+  const question = document.getElementById("question");
+  const choices = Array.from(document.querySelectorAll("#choices button"));
+  const scoreDisplay = document.getElementById("score");
+  
+  function getQuestion() {
+    fetch("https://opentdb.com/api.php?amount=1")
+      .then((res) => res.json())
+      .then((data) => {
+        const questionData = data.results[0];
+        question.innerText = questionData.question;
+        const choicesData = questionData.incorrect_answers.concat(questionData.correct_answer);
+        choicesData.sort(() => Math.random() - 0.5);
+        choices.forEach((choice, index) => {
+          choice.innerText = choicesData[index];
+          choice.onclick = () => {
+            if (choice.innerText === questionData.correct_answer) {
+              choice.style.backgroundColor = "green";
+              score++;
+            } else {
+              choice.style.backgroundColor = "red";
+              choices.find((c) => c.innerText === questionData.correct_answer).style.backgroundColor =
+                "green";
+            }
+            scoreDisplay.innerText = `Score: ${score}`;
+            choices.forEach((c) => (c.disabled = true));
+          };
+        });
+      })
+      .catch((err) => console.error(err));
+  }
 
-getQuestion();
-  </script>
-</body>
+  function resetQuiz() {
+    score = 0;
+    scoreDisplay.innerText = `Score: ${score}`;
+    choices.forEach((choice) => {
+      choice.style.backgroundColor = "#ddd";
+      choice.disabled = false;
+    });
+    getQuestion();
+  }
+
+  getQuestion();
+  
+  const resetButton = document.createElement("button");
+  resetButton.innerText = "Reset Quiz";
+  resetButton.style.backgroundColor = "#444";
+  resetButton.style.color = "#fff";
+  resetButton.style.border = "none";
+  resetButton.style.fontSize = "18px";
+  resetButton.style.padding = "10px 20px";
+  resetButton.style.borderRadius = "5px";
+  resetButton.style.cursor = "pointer";
+  resetButton.style.transition = "background-color 0.3s";
+  resetButton.style.boxShadow = "1px 1px 1px rgba(0, 0, 0, 0.2)";
+  resetButton.style.marginRight = "50px";
+  resetButton.addEventListener("click", resetQuiz);
+  
+  scoreDisplay.insertAdjacentElement("beforebegin", resetButton);
+</script>
+
+  </body>
 </html>
