@@ -1,168 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>RaghadTriviaTest</title>
-	<style>
-		body {
-			background-color: #f7f7f7;
-			font-family: Arial, sans-serif;
-			color: #333;
-		}
-		h1 {
-			font-size: 3em;
-			text-align: center;
-			margin-top: 50px;
-			margin-bottom: 50px;
-			color: #1c478e;
-		}
-		button {
-			display: block;
-			margin: 50px auto;
-			padding: 10px 20px;
-			background-color: #1c478e;
-			color: #fff;
-			border: none;
-			border-radius: 5px;
-			font-size: 1.2em;
-			cursor: pointer;
-			transition: background-color 0.3s;
-		}
-		button:hover {
-			background-color: #2550a7;
-		}
-		.question {
-			font-size: 2em;
-			text-align: center;
-			margin-top: 50px;
-			margin-bottom: 50px;
-			color: #333;
-		}
-		.answer {
-			font-size: 1.2em;
-			text-align: center;
-			margin-top: 20px;
-			margin-bottom: 20px;
-			color: #1c478e;
-		}
-		.choices {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			margin-top: 50px;
-			margin-bottom: 50px;
-		}
-		.choice {
-			margin-top: 10px;
-			margin-bottom: 10px;
-			padding: 10px 20px;
-			background-color: #fff;
-			color: #333;
-			border: 1px solid #1c478e;
-			border-radius: 5px;
-			font-size: 1.2em;
-			cursor: pointer;
-			transition: background-color 0.3s;
-		}
-		.choice:hover {
-			background-color: #1c478e;
-			color: #fff;
-		}
-		.hidden {
-			display: none;
-		}
-		.correct-message {
-			font-size: 2em;
-			text-align: center;
-			margin-top: 50px;
-			margin-bottom: 50px;
-			color: #3bb143;
-		}
-		.firework {
-			position: absolute;
-			opacity: 0;
-			animation: firework 1s linear forwards;
-			transition: opacity 0.3s;
-			z-index: 9999;
-		}
-		@keyframes firework {
-			0% {
-				transform: scale(0);
-				opacity: 1;
-			}
-			50% {
-				transform: scale(1.5);
-				opacity: 0.7;
-			}
-			100% {
-				transform: scale(1);
-				opacity: 0;
-			}
-		}
-	</style>
+  <meta charset="UTF-8">
+  <title>Raghad Quiz</title>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: sans-serif;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 50px;
+      color: #444;
+    }
+    #question {
+      font-size: 24px;
+      margin-top: 50px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    #choices {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 50px;
+    }
+    button {
+      background-color: #ddd;
+      color: #444;
+      border: none;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    }
+    button:hover {
+      background-color: #bbb;
+    }
+    button:active {
+      box-shadow: none;
+      transform: translateY(1px);
+    }
+    #score {
+      text-align: right;
+      font-size: 18px;
+      margin-right: 50px;
+      color: #444;
+    }
+  </style>
 </head>
 <body>
-	<h1>RaghadTriviaTest</h1>
-	<button onclick="getQuestion()">Get Question</button>
-	<div class="question" id="question"></div>
-	<div class="choices" id="choices"></div>
-	<div class="answer hidden" id="answer"></div>
-	<div class="correct-message hidden" id="correct-message">Correct!</div>
-	<div class="fireworks">
-		<img class="firework" src="https://www.transparentpng.com/thumb/firework/TQL7wQ-firework-vector.png">
-		<img class="firework" src="https://www.transparentpng.com/thumb/firework/VWvDbv-cartoon-explosion-firework-clipart-transparent.png">
-		<img class="firework" src="https://www.transparentpng.com/thumb/firework/0wB5c5-colorful-fireworks-png.png">
-	</div>
-	<script>
-		const API_URL = 'https://opentdb.com/api.php?amount=1&type=multiple';
-		let correctAnswer;
+  <h1>Raghad Quiz</h1>
+  <p id="question"></p>
+  <div id="choices">
+    <button id="choiceA"></button>
+    <button id="choiceB"></button>
+    <button id="choiceC"></button>
+    <button id="choiceD"></button>
+  </div>
+  <p id="score">Score: 0</p>
+  <script>
+    let score = 0;
+    const question = document.getElementById("question");
+    const choices = Array.from(document.querySelectorAll("#choices button"));
+    const scoreDisplay = document.getElementById("score");
+function getQuestion() {
+  fetch("https://opentdb.com/api.php?amount=1")
+    .then((res) => res.json())
+    .then((data) => {
+      const questionData = data.results[0];
+      question.innerText = questionData.question;
+      const choicesData = questionData.incorrect_answers.concat(questionData.correct_answer);
+      choicesData.sort(() => Math.random() - 0.5);
+      choices.forEach((choice, index) => {
+        choice.innerText = choicesData[index];
+        choice.onclick = () => {
+          if (choice.innerText === questionData.correct_answer) {
+            choice.style.backgroundColor = "green";
+            score++;
+          } else {
+            choice.style.backgroundColor = "red";
+            choices.find((c) => c.innerText === questionData.correct_answer).style.backgroundColor =
+              "green";
+          }
+          scoreDisplay.innerText = `Score: ${score}`;
+          choices.forEach((c) => (c.disabled = true));
+        };
+      });
+    })
+    .catch((err) => console.error(err));
+}
 
-		function getQuestion() {
-			fetch(API_URL)
-				.then(res => res.json())
-				.then(data => {
-					const question = data.results[0].question;
-					const correctIndex = Math.floor(Math.random() * 4);
-					const incorrectAnswers = data.results[0].incorrect_answers;
-					incorrectAnswers.splice(correctIndex, 0, data.results[0].correct_answer);
-					correctAnswer = data.results[0].correct_answer;
-
-					const questionDiv = document.getElementById('question');
-					questionDiv.innerText = question;
-
-					const choicesDiv = document.getElementById('choices');
-					choicesDiv.innerHTML = '';
-					for (let i = 0; i < 4; i++) {
-						const choiceDiv = document.createElement('div');
-						choiceDiv.className = 'choice';
-						choiceDiv.innerText = incorrectAnswers[i];
-						choiceDiv.onclick = () => checkAnswer(i === correctIndex);
-						choicesDiv.appendChild(choiceDiv);
-					}
-
-					const answerDiv = document.getElementById('answer');
-					answerDiv.className = 'answer hidden';
-					answerDiv.innerText = correctAnswer;
-
-					const correctMessageDiv = document.getElementById('correct-message');
-					correctMessageDiv.className = 'correct-message hidden';
-				});
-		}
-
-		function checkAnswer(isCorrect) {
-			if (isCorrect) {
-				const correctMessageDiv = document.getElementById('correct-message');
-				correctMessageDiv.className = 'correct-message';
-				const fireworks = document.querySelectorAll('.firework');
-				for (let i = 0; i < fireworks.length; i++) {
-					fireworks[i].style.left = Math.random() * 100 + '%';
-					fireworks[i].style.top = Math.random() * 100 + '%';
-					fireworks[i].style.opacity = 1;
-				}
-			} else {
-				const answerDiv = document.getElementById('answer');
-				answerDiv.className = 'answer';
-			}
-		}
-	</script>
+getQuestion();
+  </script>
 </body>
 </html>
